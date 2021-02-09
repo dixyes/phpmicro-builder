@@ -1,0 +1,10 @@
+**
+!.gitignore
+!action.yml
+!Readme.md
+!win
+!win/*
+!macos
+!macos/*
+!linux
+!linux/*
