@@ -8,3 +8,8 @@
 !macos/*
 !linux
 !linux/*
+!patches
+!patches/*
+!files
+!files/*
+

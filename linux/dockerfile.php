@@ -3,9 +3,12 @@ require_once("argparse.php");
 ?>
 FROM alpine:edge
 
+# for dbg
+RUN echo -ne 'https://mirrors.ustc.edu.cn/alpine/edge/main\nhttps://mirrors.ustc.edu.cn/alpine/edge/community\n' > /etc/apk/repositories
+
 # install dependencies
-RUN apk add --no-cache vim alpine-sdk xz autoconf automake linux-headers \
-    clang-dev clang lld cmake zlib-dev zlib-static mbedtls-dev mbedtls-static \
+RUN apk add --no-cache vim alpine-sdk xz autoconf automake bison re2c \
+    linux-headers clang-dev clang lld cmake zlib-dev zlib-static \
     bzip2-dev bzip2-static
 
 # setup common environs
@@ -30,6 +33,9 @@ RUN mkdir -p /usr/lib /usr/include && \
 # prepare PHP codes
 COPY <?php echo $php_dir; ?> /work/php/
 
+# prepare extension codes
+<?php echo Ext::$prepext; ?>
+
 # configure php
 RUN cd /work/php && \
     ./buildconf --force && \
@@ -49,12 +55,12 @@ RUN cd /work/php && \
         --disable-xmlreader \
         --disable-xmlwriter \
         <?php } ?>\
-        <?php echo Ext::$extstr ?>\
-    && :
+        <?php echo Ext::$extstr ?> && \
+    :
 
 # build PHPmicro
 RUN cd /work/php && \
     make \
-        EXTRA_LIBS="<?php echo Dep::$libstr; ?> /usr/lib/libbz2.a /lib/libz.a /usr/lib/libstdc++.a" \
+        EXTRA_LIBS="<?php echo Ext::$libstr; ?>" \
         -j$(nproc) && \
     elfedit --output-osabi linux sapi/micro/micro.sfx

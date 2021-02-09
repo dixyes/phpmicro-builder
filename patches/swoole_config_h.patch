@@ -1,0 +1,27 @@
+diff --git a/config.m4 b/config.m4
+index 8193d9d69..1a9d1c846 100644
+--- a/config.m4
++++ b/config.m4
+@@ -286,6 +286,13 @@ fi
+ AC_CANONICAL_HOST
+
+ if test "$PHP_SWOOLE" != "no"; then
++dnl solve in-tree build config.h problem
++dnl just make a fake config.h before all things
++PHP_ADD_BUILD_DIR(PHP_EXT_DIR(swoole)"/build", 1)
++cat > PHP_EXT_DIR(swoole)/build/config.h << EOF
++#include "php_config.h"
++EOF
++INCLUDES="-I. -I"PHP_EXT_DIR(swoole)"/build ${INCLUDES}"
+
+     AC_CHECK_LIB(c, accept4, AC_DEFINE(HAVE_ACCEPT4, 1, [have accept4]))
+     AC_CHECK_LIB(c, signalfd, AC_DEFINE(HAVE_SIGNALFD, 1, [have signalfd]))
+@@ -682,7 +689,7 @@ if test "$PHP_SWOOLE" != "no"; then
+         AC_DEFINE(SW_USE_ASM_CONTEXT, 1, [use boost asm context])
+     fi
+
+-    PHP_NEW_EXTENSION(swoole, $swoole_source_file, $ext_shared,,$EXTRA_CFLAGS, cxx)
++    PHP_NEW_EXTENSION(swoole, $swoole_source_file, $ext_shared,,"$EXTRA_CFLAGS -DHAVE_CONFIG_H", cxx)
+
+     PHP_ADD_INCLUDE([$ext_srcdir])
+     PHP_ADD_INCLUDE([$ext_srcdir/include])

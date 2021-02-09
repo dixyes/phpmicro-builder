@@ -1,0 +1,2 @@
+extern zend_module_entry swoole_module_entry;
+#define phpext_swoole_ptr &swoole_module_entry

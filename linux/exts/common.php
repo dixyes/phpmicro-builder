@@ -6,8 +6,6 @@ $common_exts = [
     "pdo",
     "fileinfo",
     "filter",
-    "hash",
-    "json",
     "mbregex",
     "phar",
     "pcntl",
@@ -29,17 +27,28 @@ foreach ($common_exts as $name){
 }
 
 $with_exts = [
-    "zlib", // have dependencies, however it's must exist in alpine:edge
-    "bz2", //  ^
     "mysqli",
     "pdo-mysql",
-    "pdo-sqlite",
 ];
 foreach ($with_exts as $name){
     $ext = new Ext($name);
     $ext->opts = "--with-$name";
     Ext::register($name, $ext);
+    Ext::add($name);
 }
+
+// enable zlib and bz2 by default
+$ext = new Ext("zlib");
+$ext->opts = "--with-zlib";
+$ext->lib("/lib/libz.a");
+Ext::register("zlib", $ext);
+Ext::add("zlib");
+
+$ext = new Ext("bz2");
+$ext->opts = "--with-bz2";
+$ext->lib("/usr/lib/libbz2.a");
+Ext::register("bz2", $ext);
+Ext::add("bz2");
 
 $libxml_exts = [
     "soap" => "--enable-soap",
@@ -58,4 +67,12 @@ foreach ($with_exts as $name=>$opts){
     Ext::register($name, $ext);
 }
 
+$ext = new Ext("mbstring");
+$ext->req("onig");
+Ext::register("mbstring", $ext);
+
+
+$ext = new Ext("curl");
+$ext->req("curl");
+Ext::register("curl", $ext);
 

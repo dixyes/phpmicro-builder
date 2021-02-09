@@ -1,0 +1,12 @@
+diff --git a/ext-src/php_swoole.cc b/ext-src/php_swoole.cc
+index d98127733..89ab4380c 100644
+--- a/ext-src/php_swoole.cc
++++ b/ext-src/php_swoole.cc
+@@ -722,7 +722,7 @@ PHP_MINIT_FUNCTION(swoole) {
+     }
+
+     swoole_init();
+-    if (strcmp("cli", sapi_module.name) == 0 || strcmp("phpdbg", sapi_module.name) == 0) {
++    if (strcmp("cli", sapi_module.name) == 0 || strcmp("phpdbg", sapi_module.name) == 0 || strcmp("micro", sapi_module.name) == 0 ) {
+         SWOOLE_G(cli) = 1;
+     }

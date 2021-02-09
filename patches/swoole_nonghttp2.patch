@@ -1,0 +1,13 @@
+diff --git a/config.m4 b/config.m4
+index 8193d9d69..56de650fb 100644
+--- a/config.m4
++++ b/config.m4
+@@ -597,7 +597,7 @@ if test "$PHP_SWOOLE" != "no"; then
+         thirdparty/hiredis/read.c \
+         thirdparty/hiredis/sds.c"
+
+-    swoole_source_file="$swoole_source_file \
++    NOswoole_source_file="$swoole_source_file \
+         thirdparty/nghttp2/nghttp2_hd.c \
+         thirdparty/nghttp2/nghttp2_rcbuf.c \
+         thirdparty/nghttp2/nghttp2_helper.c \

@@ -5,7 +5,7 @@
 class Dep{
     static public $prepares = "";
     static public $builds = "";
-    static public $libstr = "";
+    //static public $libstr = "";
     static private $deps = [];
     static public function make(){
         // generate build part and prove dep
@@ -34,12 +34,13 @@ class Dep{
                 "    tar -x --strip-components=1 -C /work/$name -f /work/$file && \\\n" .
                 "    rm /work/$file && \\\n    ";
             }
-            $copies .= "/work\n";
+            $copies .= "/work/\n";
             $extracts .= ":\n\n";
             static::$prepares .= $copies;
             static::$prepares .= $extracts;
         }
         // make libs part
+        /*
         static::$libstr = array_reduce(static::$deps, function($now, $dep){
             if(NULL === $now){
                 return implode(" ", $dep->libs);
@@ -49,6 +50,7 @@ class Dep{
             }
             return $now . " " . implode(" ", $dep->libs);
         });
+         */
     }
     static public function add(string $name, string $srcfile, ?string $confargs=NULL, ?string $makeargs=NULL, ?string $builddir=NULL){
         if(!array_key_exists($name, static::$deps)){
@@ -97,6 +99,9 @@ class Dep{
     }
     private function lib(string $name){
         array_push($this->libs, $name);
+    }
+    public function getlibs(){
+        return $this->libs;
     }
 }
 
