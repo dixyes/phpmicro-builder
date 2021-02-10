@@ -11,6 +11,7 @@ If you want use at your own machine:
 
 # WIP
 
+ - workflow in action.yml
  - macOS
  - Windows in native docker
 
