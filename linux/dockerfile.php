@@ -3,8 +3,10 @@ require_once("argparse.php");
 ?>
 FROM alpine:edge
 
+<?php if(defined('USE_MIRROR')){ ?>
 # for dbg
-RUN echo -ne 'https://mirrors.ustc.edu.cn/alpine/edge/main\nhttps://mirrors.ustc.edu.cn/alpine/edge/community\n' > /etc/apk/repositories
+RUN echo -ne 'https://<?php echo USE_MIRROR; ?>/alpine/edge/main\nhttps://<?php echo USE_MIRROR; ?>/alpine/edge/community\n' > /etc/apk/repositories
+<?php } ?>
 
 # install dependencies
 RUN apk add --no-cache vim alpine-sdk xz autoconf automake bison re2c \
@@ -31,7 +33,7 @@ RUN mkdir -p /usr/lib /usr/include && \
 
 
 # prepare PHP codes
-COPY <?php echo $php_dir; ?> /work/php/
+COPY <?php if(!defined("PHP_SRC")){ ?>php-src<?php  }else{ echo PHP_SRC; } ?> /work/php/
 
 # prepare extension codes
 <?php echo Ext::$prepext; ?>

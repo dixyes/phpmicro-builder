@@ -64,7 +64,7 @@ class Ext {
         $use_cpp = false;
         foreach(static::$exts as $ext){
             foreach($ext->libs as $lib){
-                if(str_ends_with($lib, "libstdc++.a")){
+                if(str_ends_with($lib, "libstdc++.a")){ // proud as PHP 8 user
                     $use_cpp = $lib;
                 }else{
                     array_push($libs, $lib);
@@ -88,7 +88,10 @@ class Ext {
             require_once(__DIR__ . "/exts/" . $fn);
         }
     }
-    static public function add(string $name, ?string $srcfile=NULL){
+    static public function del(string $name){
+        unset(static::$exts[$name]);
+    }
+    static public function add(string $name, ?string $srcfile=NULL, array $options=[]){
         if(!array_key_exists($name, static::$known)){
             //todo: warn it, then use only enable options
             throw new Exception("Extension $name is not supported");

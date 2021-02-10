@@ -52,9 +52,9 @@ class Dep{
         });
          */
     }
-    static public function add(string $name, string $srcfile, ?string $confargs=NULL, ?string $makeargs=NULL, ?string $builddir=NULL){
+    static public function add(string $name, string $srcfile, array $options=[]){
         if(!array_key_exists($name, static::$deps)){
-            static::$deps[$name] = new Dep($name, $srcfile, $confargs, $makeargs, $builddir);
+            static::$deps[$name] = new Dep($name, $srcfile, $options);
         } 
     }
     static public function find($name){
@@ -69,12 +69,12 @@ class Dep{
     private $libs = [];
     private $provides = [];
     private $shown = false;
-    private function __construct(string $name, string $srcfile, ?string $confargs=NULL, ?string $makeargs=NULL, ?string $builddir=NULL){
+    private function __construct(string $name, string $srcfile, array $options=[]){
         $this->name = $name;
         $this->srcfile = $srcfile;
-        $this->confargs = $confargs;
-        $this->makeargs = $makeargs;
-        $this->builddir = $builddir;
+        foreach(["confargs", "makeargs", "builddir"] as $opt){
+            @$this->$opt = $options[$opt];
+        }
     }
     private function gentext(){
         if($this->shown){
