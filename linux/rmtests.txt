@@ -1,0 +1,15 @@
+# this is tests to be removed
+
+tests/basic/bug71273.phpt
+
+# setlocal(3) things
+tests/basic/consistent_float_string_casts.phpt
+tests/lang/bug30638.phpt
+Zend/tests/lc_ctype_inheritance.phpt
+
+# micro not work like this
+ext/standard/tests/versioning/php_sapi_name.phpt
+ext/standard/tests/url/get_headers_error_003.phpt
+ext/pcntl/tests/pcntl_exec.phpt
+ext/phar/tests/cache_list/copyonwrite*.phar.phpt
+Zend/tests/bug40236.phpt

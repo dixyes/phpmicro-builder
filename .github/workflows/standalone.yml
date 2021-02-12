@@ -1,0 +1,54 @@
+name: standalone use
+
+#on: [gollum]
+on: [push, pull_request]
+
+jobs:
+  linux-standalone:
+    name: Linux standalone build tests
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Checkout builder
+        uses: actions/checkout@v2
+      
+      - name: Prepare php codes
+        uses: actions/checkout@v2
+        with:
+          repository: php/php-src
+          path: php-src
+          ref: php-8.0.2
+      
+      - name: Prepare micro codes
+        uses: actions/checkout@v2
+        with:
+          repository: longyan/phpmicro
+          path: php-src/sapi/micro
+      
+      # todo: add some deps here
+      
+      - name: Generate .dockerignore and apply patches
+        shell: bash
+        run: |
+          echo 'php-src/.git' > .dockerignore &&
+          echo 'php-src/sapi/micro/.git' >> .dockerignore &&
+          cd php-src &&
+          patch -p1 < sapi/micro/patches/disable_huge_page.patch &&
+          patch -p1 < sapi/micro/patches/cli_checks.patch
+
+      - name: Build micro with docker
+        shell: bash
+        run: |
+          ./linux/make.sh
+      
+      - name: Run tests in docker
+        shell: bash
+        continue-on-error: true
+        run: |
+          docker run \
+            -v `realpath linux/test.sh`:/work/test.sh \
+            -v `realpath linux/rmtests.txt`:/work/iwillrmthesetestsonthismachine \
+            -w /work/php \
+            dixyes/microbuilder \
+            /work/test.sh INACTION
+
+

@@ -1,0 +1,51 @@
+name: 'Build PHPmicro sfx file'
+description: 'Build micro.sfx'
+inputs:
+  srcinfos:
+    description: 'sources info, in JSON (see Wiki)'
+    required: false
+    default: ''
+  deps:
+    description: 'deps, comma splited'
+    required: false
+    default: ''
+  exts:
+    description: 'exts, comma splited'
+    required: false
+    default: ''
+  args:
+    description: 'args for passing to builder'
+    required: false
+    default: ''
+  workdir:
+    description: 'work dir for this build'
+    required: false
+    default: ''
+  githubtoken:
+    description: 'github token, needed if we used ghrel type deps/exts'
+    required: false
+    default: ''
+  microref:
+    description: 'micro ref'
+    required: false
+    default: 'master'
+  phpref:
+    description: 'php ref'
+    required: false
+    default: 'php-8.0.2'
+  patches:
+    description: 'patches applied to php, comma splited'
+    required: false
+    default: 'cli_checks.patch,disable_huge_page.patch'
+  runtests:
+    description: '1 for running micro tests, other for not'
+    required: false
+    default: '1'
+outputs:
+  test-result:
+    description: 'ok" or "failed"'
+runs:
+  using: 'node12'
+  # todo: dispatcher
+  main: linux/action.js
+ 

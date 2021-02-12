@@ -17,7 +17,6 @@ $common_exts = [
     "sysvmsg",
     "sysvsem",
     "sysvshm",
-    "mysqlnd",
 ];
 foreach ($common_exts as $name){
     $ext = new Ext($name);
@@ -25,6 +24,10 @@ foreach ($common_exts as $name){
     // enable by default
     Ext::add($name);
 }
+$ext = new Ext("mysqlnd");
+$ext->lib("/lib/libz.a");
+Ext::register("mysqlnd", $ext);
+Ext::add("mysqlnd");
 
 $with_exts = [
     "mysqli",
@@ -36,6 +39,7 @@ foreach ($with_exts as $name){
     Ext::register($name, $ext);
     Ext::add($name);
 }
+
 
 // enable zlib and bz2 by default
 $ext = new Ext("zlib");

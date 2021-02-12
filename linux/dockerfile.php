@@ -1,7 +1,9 @@
 <?php
 require_once("argparse.php");
 ?>
-FROM alpine:edge
+# due to ubuntu bug https://bugs.launchpad.net/ubuntu/+source/libseccomp/+bug/1914939
+# we're not using latest alpine yet
+FROM alpine:3.12
 
 <?php if(defined('USE_MIRROR')){ ?>
 # for dbg
