@@ -66,7 +66,12 @@ async function mian(){
   console.log("::group::Generate build args");
   let args = core.getInput("args").split(/\s+/).filter(e=>e!="");
   for(let k in ret.exts){
-    args.push(`+ext,${k},srcfile=${ret.exts[k].path}`);
+    if(ret.exts[k].path){
+      args.push(`+ext,${k},srcfile=${ret.exts[k].path}`);
+    }else{
+      // extensions without src file
+      args.push(`+ext,${k}`);
+    }
   };
   for(let k in ret.deps){
     args.push(`+dep,${k},srcfile=${ret.deps[k].path}`);
