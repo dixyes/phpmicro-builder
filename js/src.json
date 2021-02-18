@@ -42,9 +42,14 @@
     "exts":{
         "swoole":{
             "type": "git",
-            "repo": "https://github.com/swoole/swoole-src",
+            "repo": "https://github.com/swoole/swoole-src.git",
             "ref": "v4.6.3",
             "requires": ["nghttp2", "libressl"]
+        },
+        "redis":{
+            "type": "git",
+            "repo": "https://github.com/phpredis/phpredis.git",
+            "ref": "5.3.3"
         }
     }
 }
