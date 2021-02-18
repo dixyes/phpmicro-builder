@@ -76,6 +76,7 @@ $ext->req("onig");
 Ext::register("mbstring", $ext);
 
 $ext = new Ext("curl");
+$ext->opts = "--with-curl";
 $ext->req("curl");
 Ext::register("curl", $ext);
 
