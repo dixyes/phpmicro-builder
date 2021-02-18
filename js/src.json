@@ -54,6 +54,10 @@
         "curl":{
             "type": "none",
             "requires": ["curl"]
+        },
+        "openssl":{
+            "type": "none",
+            "requires": ["libressl"]
         }
     }
 }

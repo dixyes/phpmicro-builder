@@ -75,8 +75,11 @@ $ext = new Ext("mbstring");
 $ext->req("onig");
 Ext::register("mbstring", $ext);
 
-
 $ext = new Ext("curl");
 $ext->req("curl");
 Ext::register("curl", $ext);
 
+$ext = new Ext("openssl");
+$ext->opts = "--with-openssl";
+$ext->req("libressl");
+Ext::register("openssl", $ext);
