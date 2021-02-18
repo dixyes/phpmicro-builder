@@ -16,7 +16,7 @@ jobs:
         with:
           githubtoken: ${{ secrets.GITHUB_TOKEN }}
           exts: swoole,redis
-          args: -ext,bz2
+          args: -ext,bz2 +ext,openssl
           workdir: ${{ github.workspace }}/microbuild
       
       - name: Basic tests

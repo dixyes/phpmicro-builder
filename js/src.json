@@ -50,6 +50,10 @@
             "type": "git",
             "repo": "https://github.com/phpredis/phpredis.git",
             "ref": "5.3.3"
+        },
+        "curl":{
+            "type": "none",
+            "requires": ["curl"]
         }
     }
 }

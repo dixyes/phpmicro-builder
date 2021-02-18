@@ -157,6 +157,8 @@ async function prepare(){
       case "url":
         ret[scope][k] = prepareurl(k, srcinfo);
         break;
+      case "none":
+        break;
       default:
         ret[scope][k] = {success: false ,msg: `Unknown type ${srcinfo.type} for ${scope} ${k}`};
     }
