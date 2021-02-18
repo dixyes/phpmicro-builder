@@ -9,6 +9,6 @@ RUN cd <?php if($this->builddir) { echo $this->builddir; } else { ?>/work/libres
     make install
 
 <?php
-    $this->lib("/usr/lib/libcrypto.a");
     $this->lib("/usr/lib/libssl.a");
+    $this->lib("/usr/lib/libcrypto.a");
 ?>
