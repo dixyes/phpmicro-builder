@@ -104,6 +104,10 @@ class Ext {
             static::$used[$name] = $ext;
         }
     }
+    static public function used(string $name){
+        @$ext = static::$used[$name];
+        return $ext;
+    }
     // instance vars
     private $srcfile = NULL;
     private $opts;

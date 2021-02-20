@@ -1,6 +1,8 @@
 <?php
 
 $ext = new Ext("swoole");
+// TODO: allow post modify
+$ext->opts .= " --enable-swoole-curl --enable-swoole-json";
 $ext->cpp(true);
 $ext->lib("/lib/libz.a");
 $ext->req("nghttp2");
