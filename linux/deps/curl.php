@@ -15,4 +15,4 @@ RUN cd <?php if($this->builddir) { echo $this->builddir; } else { ?>/work/curl<?
     make <?php if($this->makeargs) { echo $this->makeargs; } else { ?>-j`nproc`<?php } ?> && \
     make install
 
-<?php $this->lib("/usr/lib/libcurl.a");?>
+<?php $this->lib("/usr/lib/libcurl.a", ["/usr/lib/libssl.a", "/usr/lib/libnghttp2.a", "/usr/lib/libssh2.a"]);?>

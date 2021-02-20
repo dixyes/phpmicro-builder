@@ -21,4 +21,4 @@ RUN echo "#include <limits.h>" >> /usr/include/openssl/rand.h && \
     make <?php if($this->makeargs) { echo $this->makeargs; } else { ?>-j`nproc`<?php } ?> &&\
     make install
 
-<?php $this->lib("/usr/lib/libzip.a");?>
+<?php $this->lib("/usr/lib/libzip.a", ["/usr/lib/libssl.a", "/usr/lib/libbz2.a", "/lib/libz.a"]);?>

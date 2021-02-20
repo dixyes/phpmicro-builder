@@ -20,14 +20,14 @@ $common_exts = [
 ];
 foreach ($common_exts as $name){
     $ext = new Ext($name);
-    Ext::register($name, $ext);
+    $ext->register();
     // enable by default
-    Ext::add($name);
+    Ext::use($name);
 }
 $ext = new Ext("mysqlnd");
 $ext->lib("/lib/libz.a");
-Ext::register("mysqlnd", $ext);
-Ext::add("mysqlnd");
+$ext->register();
+Ext::use("mysqlnd");
 
 $with_exts = [
     "mysqli",
@@ -36,8 +36,8 @@ $with_exts = [
 foreach ($with_exts as $name){
     $ext = new Ext($name);
     $ext->opts = "--with-$name";
-    Ext::register($name, $ext);
-    Ext::add($name);
+    $ext->register();
+    Ext::use($name);
 }
 
 
@@ -45,14 +45,14 @@ foreach ($with_exts as $name){
 $ext = new Ext("zlib");
 $ext->opts = "--with-zlib";
 $ext->lib("/lib/libz.a");
-Ext::register("zlib", $ext);
-Ext::add("zlib");
+$ext->register();
+Ext::use("zlib");
 
 $ext = new Ext("bz2");
 $ext->opts = "--with-bz2";
 $ext->lib("/usr/lib/libbz2.a");
-Ext::register("bz2", $ext);
-Ext::add("bz2");
+$ext->register();
+Ext::use("bz2");
 
 $libxml_exts = [
     "soap" => "--enable-soap",
@@ -68,19 +68,19 @@ foreach ($with_exts as $name=>$opts){
     $ext = new Ext($name);
     $ext->req("libxml");
     $ext->opts = $opts;
-    Ext::register($name, $ext);
+    $ext->register();
 }
 
 $ext = new Ext("mbstring");
 $ext->req("onig");
-Ext::register("mbstring", $ext);
+$ext->register();
 
 $ext = new Ext("curl");
 $ext->opts = "--with-curl";
 $ext->req("curl");
-Ext::register("curl", $ext);
+$ext->register();
 
 $ext = new Ext("openssl");
 $ext->opts = "--with-openssl";
 $ext->req("libressl");
-Ext::register("openssl", $ext);
+$ext->register();

@@ -3,19 +3,22 @@
 // library dependencies dockerfile generator
 
 class Dep{
+    // static exports
     static public $prepares = "";
-    static public $builds = "";
-    //static public $libstr = "";
-    static private $deps = [];
+    static public $buildstr = "";
+    // static internals
+    static private $used = [];
+    // static methods
     static public function make(){
-        // generate build part and prove dep
-        foreach(static::$deps as $dep){
-            $dep->gentext();
+        // prove dependencies
+        foreach(static::$used as $item){
+            $item->show();
+            Lib::cpp($item->use_cpp);
         }
         // generate code preparation part
         $dirs = [];
         $files = [];
-        foreach(static::$deps as $name=>$dep){
+        foreach(static::$used as $name=>$dep){
             if(is_dir($dep->srcfile)){
                 $dirs[$name] = $dep->srcfile;
             }else{
@@ -39,35 +42,23 @@ class Dep{
             static::$prepares .= $copies;
             static::$prepares .= $extracts;
         }
-        // make libs part
-        /*
-        static::$libstr = array_reduce(static::$deps, function($now, $dep){
-            if(NULL === $now){
-                return implode(" ", $dep->libs);
-            }
-            if(0 >= count($dep->libs)){
-                return $now;
-            }
-            return $now . " " . implode(" ", $dep->libs);
-        });
-         */
     }
-    static public function add(string $name, string $srcfile, array $options=[]){
-        if(!array_key_exists($name, static::$deps)){
-            static::$deps[$name] = new Dep($name, $srcfile, $options);
-        } 
+    static public function find($name): ?Dep{
+        @$ret = static::$used[$name];
+        return $ret;
     }
-    static public function find($name){
-        if(isset(static::$deps[$name]))
-            return static::$deps[$name];
+    static public function use(string $name, string $srcfile, array $options=[]){
+        static::$used[$name] = new Dep($name, $srcfile, $options);
     }
     private $name;
     private $srcfile;
+    private $use_cpp = false;
     private $confargs;
     private $makeargs;
     private $builddir;
     private $libs = [];
     private $provides = [];
+    private $reqs = [];
     private $shown = false;
     private function __construct(string $name, string $srcfile, array $options=[]){
         $this->name = $name;
@@ -76,32 +67,53 @@ class Dep{
             @$this->$opt = $options[$opt];
         }
     }
-    private function gentext(){
-        if($this->shown){
-            return ;
-        }
+    private function show(){
+        //echo "show $this\n";
+        // make this str first
         ob_start();
         require("deps/" . $this->name . ".php");
-        static::$builds .= ob_get_contents();
+        $thisstr = ob_get_contents();
         ob_end_clean();
-        $this->shown = true;
-    }
-    private function req(string $name){
-        if(!array_key_exists($name, static::$deps)){
-            $thisname = $this->name;
-            throw new Exception("Cannot satisfy deps: lib $thisname needs $name\n");
+        // print all deps
+        foreach($this->reqs as $reqname){
+            //echo "req $reqname\n";
+            $req = static::find($reqname);
+            if(!$req){
+                throw new Exception("Cannot satisfy deps: lib $this needs $reqname\n");
+            }
+            $req->show();
         }
-        static::$deps[$name]->gentext();
+        // print this
+        if($this->shown){
+            return;
+        }
+        static::$buildstr .= $thisstr;
+        $this->shown = true;
+        // use lib at last
+        foreach($this->libs as $libname){
+            Lib::use($libname);
+        }
+    }
+    public function __toString(){
+        return $this->name;
+    }
+    // internal methods for informations provide
+    private function req(string $name){
+        if(!array_key_exists($name, $this->reqs)){
+            array_push($this->reqs, $name);
+        }
     }
     private function provides(string $name){
         // do nothing yet , WIP: make openssl/libressl chosable
         //array_push($this->provides, $name);
     }
-    private function lib(string $name){
+    private function lib(string $name, array $deps=[]){
+        $lib = new Lib($name, $deps);
+        $lib->register();
         array_push($this->libs, $name);
     }
-    public function getlibs(){
-        return $this->libs;
+    private function cpp(bool $use_cpp){
+        $this->use_cpp = $use_cpp;
     }
 }
 

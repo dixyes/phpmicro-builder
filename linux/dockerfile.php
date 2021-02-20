@@ -5,9 +5,9 @@ require_once("argparse.php");
 # we're not using latest alpine yet
 FROM alpine:3.12
 
-<?php if(defined('USE_MIRROR')){ ?>
+<?php if(isset($defs['USE_MIRROR'])){ ?>
 # for dbg
-RUN echo -ne 'https://<?php echo USE_MIRROR; ?>/alpine/edge/main\nhttps://<?php echo USE_MIRROR; ?>/alpine/edge/community\n' > /etc/apk/repositories
+RUN echo -ne 'https://<?php echo $defs['USE_MIRROR']; ?>/alpine/edge/main\nhttps://<?php echo $defs['USE_MIRROR']; ?>/alpine/edge/community\n' > /etc/apk/repositories
 <?php } ?>
 
 # install dependencies
@@ -20,8 +20,8 @@ ENV CC=clang
 ENV CXX=clang++
 ENV LD=ld.lld
 
-ENV CFLAGS='<?php if(!defined("CFLAGS")){ ?> -fno-ident -march=nehalem -mtune=haswell -Os <?php }else{ echo CFLAGS; }?>'
-ENV CXXFLAGS='<?php if(!defined("CXXFLAGS")){ ?><?php }else{ echo CXXFLAGS; }?>'
+ENV CFLAGS='<?php if(!isset($defs["CFLAGS"])){ ?> -fno-ident -march=nehalem -mtune=haswell -Os <?php }else{ echo $defs["CFLAGS"]; }?>'
+ENV CXXFLAGS='<?php if(!isset($defs["CXXFLAGS"])){ ?><?php }else{ echo $defs["CXXFLAGS"]; }?>'
 
 # make dirs
 RUN mkdir -p /usr/lib /usr/include && \
@@ -30,12 +30,17 @@ RUN mkdir -p /usr/lib /usr/include && \
 # prepare lib dependencies
 <?php
     echo Dep::$prepares;
-    echo Dep::$builds;
+    echo Dep::$buildstr;
 ?>
 
 
 # prepare PHP codes
-COPY <?php if(!defined("PHP_SRC")){ ?>php-src<?php  }else{ echo PHP_SRC; } ?> /work/php/
+COPY <?php
+if(isset($defs["PHP_SRC"])){
+    echo $defs['PHP_SRC'];
+}else{
+    echo "php-src";
+} ?> /work/php/
 
 # prepare extension codes
 <?php echo Ext::$prepext; ?>
@@ -65,6 +70,6 @@ RUN cd /work/php && \
 # build PHPmicro
 RUN cd /work/php && \
     make \
-        EXTRA_LIBS="<?php echo Ext::$libstr; ?>" \
+        EXTRA_LIBS="<?php echo Lib::$libstr; ?>" \
         -j$(nproc) && \
     elfedit --output-osabi linux sapi/micro/micro.sfx

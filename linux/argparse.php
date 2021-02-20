@@ -8,7 +8,9 @@ function usage(){
 // todo: say usage here
 }
 
+$defs = [];
 function parseargs($argv){
+    global $defs;
     $depopts = [];
     $extopts = [];
     try {
@@ -46,6 +48,18 @@ function parseargs($argv){
                 array_push($extopts, [$op, $name, $options]);
                 break;
             case 'def':
+                switch($op){
+                    case "-":
+                        foreach($options as $k=>$v){
+                            unset($defs[$k]);
+                        }
+                        break;
+                    case "+":
+                        foreach($options as $k=>$v){
+                            $defs[$k] = $v;
+                        }
+                        break;
+                }
                 foreach($options as $k=>$v){
                     define($k, $v);
                 }
@@ -59,22 +73,22 @@ function parseargs($argv){
 
     foreach($depopts as $depopt){
         if("+" == $depopt[0]){
-            Dep::add($depopt[1], $depopt[2], $depopt[3]);
-        }elseif("-" == $op){
-            Dep::del($depopt[1]);
+            Dep::use($depopt[1], $depopt[2], $depopt[3]);
+        }else{
+            throw new Exception("Cannot remove deps");
         }
-    
     }
     Dep::make();
     Ext::prepare();
     foreach($extopts as $extopt){
         if("+" == $extopt[0]){
             @$srcfile = $extopt[2]["srcfile"];
-            Ext::add($extopt[1], $srcfile, $extopt[2]);
+            Ext::use($extopt[1], $srcfile, $extopt[2]);
         }elseif("-" == $extopt[0]){
-            Ext::del($extopt[1]);
+            Ext::unuse($extopt[1]);
         }
     }
     Ext::make();
+    Lib::make();
 }
 parseargs($argv);
