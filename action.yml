@@ -47,5 +47,5 @@ outputs:
 runs:
   using: 'node12'
   # todo: dispatcher
-  main: linux/action.js
+  main: action.js
  

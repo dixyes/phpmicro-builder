@@ -6,7 +6,7 @@ const { io, core, exec } = require(__dirname + "/../js/ghwrap.dist/index.js");
 const fs = require("fs");
 const fsp = require("fs").promises;
 
-async function mian(){
+async function start(){
   // prepare build dir
   console.log("::group::Prepare build dir");
   let actiondir = fs.realpathSync(".");
@@ -89,11 +89,4 @@ async function mian(){
   }
 }
 
-process.on('unhandledRejection', (reason, p) => {
-  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-  // application specific logging, throwing an error, or other logic here
-  core.setFailed(reason);
-  process.exit(1);
-});
-
-mian().catch(core.setFailed);
+module.exports.start = start;
