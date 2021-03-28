@@ -5,7 +5,8 @@ on: [push, pull_request]
 
 jobs:
   inaction-linux:
-    name: linux in-action build tests
+    if: false
+    name: Linux in-action build tests
     runs-on: "ubuntu-latest"
     steps:
       - name: Checkout self
@@ -38,4 +39,40 @@ jobs:
           EOF
           cat microbuild/micro.sfx hello.php > hello
           chmod 0755 hello
+          ./hello
+
+  inaction-win:
+    name: Windows in-action build tests
+    runs-on: "windows-latest"
+    steps:
+      - name: Checkout self
+        uses: actions/checkout@v2
+
+      - name: Build micro use action
+        uses: ./
+        with:
+          githubtoken: ${{ secrets.GITHUB_TOKEN }}
+          exts: swoole,redis,openssl,curl
+          args: -ext,bz2
+          workdir: ${{ github.workspace }}/microbuild
+      
+      - name: Basic tests
+        shell: bash
+        if: false
+        working-directory: ${{ github.workspace }}
+        run: |
+          cat > hello.php <<EOF
+          <?php
+          echo "a hello from phpmicro" . PHP_EOL;
+          echo "php_sapi_name(): " . php_sapi_name() . PHP_EOL;
+          echo "argv is" . PHP_EOL;
+          var_dump(\$argv);
+          echo "self is: micro_get_self_filename(): " . micro_get_self_filename() . PHP_EOL;
+          echo "sfx size (payload offset) is: micro_get_sfx_filesize(): " . micro_get_sfx_filesize() . PHP_EOL;
+          echo "micro version is: ";
+          var_dump(micro_version());
+          echo "get_loaded_extensions():" . PHP_EOL;
+          var_dump(get_loaded_extensions());
+          EOF
+          copy /b microbuild/micro.sfx + hello.php hello.exe
           ./hello
