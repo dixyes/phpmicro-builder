@@ -7,7 +7,7 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 
-const srcinfos = {exts:{}, deps:{}};
+const srcinfos = module.exports.srcinfos = {exts:{}, deps:{}};
 const octokit = github.getOctokit(core.getInput('githubtoken'), {required: true});
 
 function dl(url, dest){
@@ -190,6 +190,4 @@ async function prepare(){
   return ret
 }
 
-module.exports = {
-  prepare: prepare
-};
+module.exports.prepare=prepare;

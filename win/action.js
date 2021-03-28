@@ -1,7 +1,7 @@
 // action builder for windows
 'use strict';
 
-const { prepare } = require(__dirname + "/../js/prepare.js");
+const { prepare, srcinfos } = require(__dirname + "/../js/prepare.js");
 const { io, core, exec } = require(__dirname + "/../js/ghwrap.dist/index.js");
 const fs = require("fs");
 const fsp = require("fs").promises;
@@ -49,18 +49,22 @@ async function start(){
   // we build these dependencies sync, they may rely on each other
   let ordereddeps = [];
   for(let k in ret.deps){
-    let dep = prepare.srcinfos.deps[k];
+    let dep = srcinfos.deps[k];
     if(dep && dep.requires){
-      for(let r in dep.requires){
-        if (! ordereddeps.includes(r)){
-          ordereddeps.push(dep);
-        }
-      }
+      ordereddeps.concat(
+        dep.requires.filter((r)=>{
+          if (! ordereddeps.includes(r)){
+            return true;
+          }
+        })
+      );
     }
     ordereddeps.push(k);
   };
+  console.log(ordereddeps);
+
   ordereddeps.reduce((a,c)=>{
-    console.log(`making dep ${k}`);
+    console.log(`making dep ${c}`);
   }, null);
   console.log("::endgroup::");
 
