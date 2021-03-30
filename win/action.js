@@ -6,6 +6,8 @@ const { io, core, exec } = require(__dirname + "/../js/ghwrap.dist/index.js");
 const fs = require("fs");
 const fsp = require("fs").promises;
 
+const tools_path = "C:\\tools\\phpdev";
+
 async function start(){
   // prepare build dir
   console.log("::group::Prepare build dir");
@@ -44,8 +46,14 @@ async function start(){
   }
   console.log("::endgroup::");
 
+  // prepare php-sdk-binary-tools
+  console.log("::group::Prepare php-sdk-binary-tools");
+  await exec.exec("git", ["clone", "--single-branch", "-b", "master", "https://github.com/Microsoft/php-sdk-binary-tools", "${tools_path}\\php-sdk-binary-tools"]);
+  console.log("::endgroup::");
+
   // prepare deps
   console.log("::group::Prepare dependencies");
+  console.log("::endgroup::");
   // we build these dependencies sync, they may rely on each other
   let ordereddeps = [];
   for(let k in ret.deps){
@@ -61,12 +69,25 @@ async function start(){
     }
     ordereddeps.push(k);
   };
-  console.log(ordereddeps);
 
-  ordereddeps.reduce((a,c)=>{
-    console.log(`making dep ${c}`);
-  }, null);
-  console.log("::endgroup::");
+  for(let c in ordereddeps){
+    console.log(`::group::Making dep ${c}`);
+    // TODO: maybe we can support vc{9,11,14,15}?
+    process.chdir(c);
+    await exec.exec("cmd",[
+      "/C",
+      "${tools_path}\\php-sdk-binary-tools\\phpsdk-vs16-x64.bat",
+      "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      `${c}.sh`],{
+        env:{
+          "INSTPATH":"..\\deps",
+          "BUILDPATH":".",
+          "SRCPATH":".",
+        }
+      });
+    process.chdir("..");
+    console.log("::endgroup::");
+  }
 
   throw "not implemented"
 
