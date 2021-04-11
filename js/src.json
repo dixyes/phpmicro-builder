@@ -68,6 +68,14 @@
         "openssl":{
             "type": "none",
             "requires": ["libressl"]
+        },
+        "zip":{
+            "type": "none",
+            "requires": ["libzip"]
+        },
+        "bz2":{
+            "type": "none",
+            "requires": ["bzip2"]
         }
     }
 }
