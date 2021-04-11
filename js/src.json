@@ -76,6 +76,18 @@
         "bz2":{
             "type": "none",
             "requires": ["bzip2"]
+        },
+        "phar":{
+            "type": "none",
+            "requires": ["zlib", "libzip"]
+        },
+        "zlib":{
+            "type": "none",
+            "requires": ["zlib"]
+        },
+        "mbstring":{
+            "type": "none",
+            "requires": ["onig"]
         }
     }
 }
