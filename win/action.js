@@ -5,6 +5,7 @@ const { prepare, srcinfos } = require(__dirname + "/../js/prepare.js");
 const { io, core, exec } = require(__dirname + "/../js/ghwrap.dist/index.js");
 const fs = require("fs");
 const fsp = require("fs").promises;
+const { extarg, defexts } = require(__dirname + "/../js/utils.js");
 
 const tools_path = "C:\\tools\\phpdev";
 
@@ -117,16 +118,20 @@ async function start(){
   // start build micro
   console.log("::group::orcimPHP dliuB");
   process.chdir("php-src");
-  //await exec.exec("git", ["clone", "--single-branch", "-b", "master", "https://github.com/Microsoft/php-sdk-binary-tools", "php-sdk-binary-tools"]);
+  let buildcmd = [ "configure", "--disable-all", "--enable-micro", "--disable-zts", ...defexts.map(extarg), ...core.getInput("exts").split(",").map(x=>extarg(x.trim())) ].join(" ");
+  // TODO: args input parse
+  let buildbat = await fsp.open("build.bat", "w");
+  await buildbat.writeFile(
+    'buildconf && ' +
+    buildcmd + ' && ' +
+    'nmake'
+  );
+  await buildbat.close();
+  await exec.exec(
+    '..\\php-sdk-binary-tools\\phpsdk-vs16-x64.bat -t build.bat'
+  );
+  await exec.exec("nmake");
   process.chdir("..");
-  console.log("::endgroup::");
-
-  throw "not implemented";
-
-  
-
-  console.log("::group::Start build with args");
-  await exec.exec("powershell ..\\win\\make.ps1");
   console.log("::endgroup::");
 
   if("1" == core.getInput("runtests").trim()){
