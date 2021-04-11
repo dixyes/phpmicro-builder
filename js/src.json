@@ -10,7 +10,7 @@
             "type": "ghrel",
             "repo": "nghttp2/nghttp2",
             "match": ".+\\.tar\\.xz",
-            "requires": ["libressl"]
+            "requires": ["libressl", "zlib"]
         },
         "libressl":{
             "type": "url",
