@@ -16,8 +16,7 @@ jobs:
         uses: ./
         with:
           githubtoken: ${{ secrets.GITHUB_TOKEN }}
-          exts: swoole,redis,openssl,curl
-          args: -ext,bz2
+          exts: swoole,redis,openssl,curl,zip,bz2
           workdir: ${{ github.workspace }}/microbuild
       
       - name: Basic tests
@@ -52,8 +51,7 @@ jobs:
         uses: ./
         with:
           githubtoken: ${{ secrets.GITHUB_TOKEN }}
-          exts: swoole,redis,openssl,curl
-          args: -ext,bz2
+          exts: swoole,redis,openssl,curl,zip
           workdir: ${{ github.workspace }}/microbuild
       
       - name: Basic tests
