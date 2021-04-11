@@ -4,7 +4,7 @@
             "type": "ghrel",
             "repo": "curl/curl",
             "match": ".+\\.tar\\.xz",
-            "requires": ["nghttp2", "libressl", "libssh2"]
+            "requires": ["nghttp2", "libressl", "libssh2", "zlib"]
         },
         "nghttp2":{
             "type": "ghrel",
