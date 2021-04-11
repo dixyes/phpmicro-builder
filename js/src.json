@@ -26,7 +26,17 @@
             "type": "ghrel",
             "repo": "nih-at/libzip",
             "match": ".+\\.tar\\.xz",
-            "requires": ["libressl", "xz"]
+            "requires": ["libressl", "zlib", "xz", "bzip2"]
+        },
+        "bzip2":{
+            "type": "url",
+            "url": "https://sourceware.org/pub/bzip2/bzip2-latest.tar.gz",
+            "name": "bzip2-latest.tar.gz"
+        },
+        "zlib":{
+            "type": "url",
+            "url": "https://zlib.net/zlib-1.2.11.tar.gz",
+            "name": "zlib-1.2.11.tar.gz"
         },
         "xz":{
             "type": "url",

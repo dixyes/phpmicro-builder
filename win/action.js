@@ -21,8 +21,16 @@ async function extractsrc(ret, name){
   switch (src.type){
     case "ghrel":
     case "url":
+      let tarname;
+      if(src.path.endsWith("xz")){
+        await exec.exec('"C:\\Program Files\\7-Zip\\7z.exe"', [ 'x', src.path ]);
+        tarname = src.path.replace(/\.xz$/, "");
+      }else{
+        tarname = src.path;
+      }
+
       await exec.exec("cmd", [ "/C", "MKDIR", name]);
-      await exec.exec("tar", [ "-x", "--strip-components=1", "-C", name, "-f", src.path]);
+      await exec.exec("tar", [ "-x", "--strip-components=1", "-C", name, "-f", tarname]);
       return name;
     case "git":
       return `${name}-${src.ref}`;
@@ -84,29 +92,11 @@ async function start(){
   for(let depi in ordereddeps){
     let dep = ordereddeps[depi];
     console.log(`::group::Making dep ${dep}`);
-    /*
-    console.log("srcinfos");
-    console.log(srcinfos);
-    console.log("ret");
-    console.log(ret);
-    */
     process.chdir(await extractsrc(ret, dep));
     // TODO: maybe we can support vc{9,11,14,15}?
-    await exec.exec('CMD /C "' +
-      'CALL "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\Build\\vcvars64.bat" && ' +
-      '"C:\\Program Files\\PowerShell\\7\\pwsh.exe" ' + `..\\win\\depsbuild\\${dep}.ps1` +
-      '"'
-      , null,
-      {
-        env:{
-          "INSTPATH":"..\\deps",
-          "BUILDPATH":".",
-          "SRCPATH":".",
-        }
-      });
+    await exec.exec('powershell', [ `..\\win\\depsbuild\\${dep}.ps1`, '-InstDir', '..\\deps' ]);
     process.chdir("..");
     console.log("::endgroup::");
-    throw "not implemented";
   }
 
   throw "not implemented";
