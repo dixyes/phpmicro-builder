@@ -51,7 +51,7 @@ jobs:
         uses: ./
         with:
           githubtoken: ${{ secrets.GITHUB_TOKEN }}
-          exts: redis,openssl,curl,zip,bz2
+          exts: redis,openssl,curl,zip,bz2,phar
           workdir: ${{ github.workspace }}/microbuild
       
       - name: Basic tests
