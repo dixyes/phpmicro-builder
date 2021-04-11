@@ -63,12 +63,6 @@ async function start(){
     core.setFailed(`Cannot fetch all deps and exts: ${ret}`);
   }
   console.log("::endgroup::");
-  
-
-  // prepare php-sdk-binary-tools
-  console.log("::group::Prepare php-sdk-binary-tools");
-  await exec.exec("git", ["clone", "--single-branch", "-b", "master", "https://github.com/Microsoft/php-sdk-binary-tools", "php-sdk-binary-tools"]);
-  console.log("::endgroup::");
 
   // prepare deps
   console.log("::group::Prepare dependencies");
@@ -94,12 +88,12 @@ async function start(){
     console.log(`::group::Making dep ${dep}`);
     process.chdir(await extractsrc(ret, dep));
     // TODO: maybe we can support vc{9,11,14,15}?
-    await exec.exec('powershell', [ `..\\win\\depsbuild\\${dep}.ps1`, '-InstDir', '..\\deps' ]);
+    await exec.exec('CMD /C ' +
+      'CALL "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\Build\\vcvars64.bat" &&' +
+      "powershell " + `..\\win\\depsbuild\\${dep}.ps1`);
     process.chdir("..");
     console.log("::endgroup::");
   }
-
-  throw "not implemented";
 
   // prepare php and micro sources
   console.log("::group::Prepare php and micro source");
@@ -114,6 +108,22 @@ async function start(){
   };
   process.chdir("..");
   console.log("::endgroup::");
+
+  // prepare php-sdk-binary-tools
+  console.log("::group::Prepare php-sdk-binary-tools");
+  await exec.exec("git", ["clone", "--single-branch", "-b", "master", "https://github.com/Microsoft/php-sdk-binary-tools", "php-sdk-binary-tools"]);
+  console.log("::endgroup::");
+
+  // start build micro
+  console.log("::group::orcimPHP dliuB");
+  process.chdir("php-src");
+  //await exec.exec("git", ["clone", "--single-branch", "-b", "master", "https://github.com/Microsoft/php-sdk-binary-tools", "php-sdk-binary-tools"]);
+  process.chdir("..");
+  console.log("::endgroup::");
+
+  throw "not implemented";
+
+  
 
   console.log("::group::Start build with args");
   await exec.exec("powershell ..\\win\\make.ps1");
