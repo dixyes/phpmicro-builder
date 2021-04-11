@@ -71,7 +71,7 @@ async function prepareghrel(n, srcinfo){
     return {success: false, msg: e};
   }
   
-  return {success: true, path: fn};
+  return {success: true, type: "ghrel", path: fn};
 }
 async function preparegit(n, srcinfo){
   let path = `${n}-${srcinfo.ref}`;
@@ -80,7 +80,7 @@ async function preparegit(n, srcinfo){
   }catch(e){
     return {success: true, msg: e};
   }
-  return {success: true, path: path};
+  return {success: true, type: "git", path: path};
 }
 async function prepareurl(n, srcinfo){
   let fn;
@@ -94,7 +94,7 @@ async function prepareurl(n, srcinfo){
   }catch(e){
     return {success: false, msg: e};
   }
-  return {success: true, path: fn};
+  return {success: true, type: "url", path: fn};
 }
 
 async function mergeinfo(){
