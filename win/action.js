@@ -103,7 +103,13 @@ async function start(){
   let microref = core.getInput("microref");
   await exec.exec("git", ["clone", "--single-branch", "-b", microref, "https://github.com/longyan/phpmicro", "php-src/sapi/micro"]);
   process.chdir("php-src");
-  let patches = core.getInput("patches").split(",").map(e=>e.trim()).filter(e=>e!="");
+  let patches = [...new Set([
+    "cli_checks.patch",
+    "zend_stream.patch",
+    "vcruntime140_80.patch", // TODO: PHP verison configurable
+    "win32_80.patch", // TODO: PHP verison configurable
+    ...core.getInput("patches").split(",").map(e=>e.trim()).filter(e=>e!=""),
+  ])];
   for(let pi in patches){
     await exec.exec("patch", ["-p1", "-i", `sapi/micro/patches/${patches[pi]}`]);
   };
@@ -124,7 +130,7 @@ async function start(){
   await buildbat.writeFile(
     'buildconf && ' +
     buildcmd + ' && ' +
-    'nmake'
+    'nmake sfx'
   );
   await buildbat.close();
   await exec.exec(
